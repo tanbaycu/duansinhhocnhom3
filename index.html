@@ -78,8 +78,8 @@
                     item.className = 'relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105';
                     
                     const img = document.createElement('img');
-                    img.src = `/_vercel/image?url=/images/${date}/${imageName}&w=400&q=75`;
-                    img.srcset = `/_vercel/image?url=/images/${date}/${imageName}&w=200&q=75 1x, /_vercel/image?url=/images/${date}/${imageName}&w=400&q=75 2x`;
+                    img.src = `images/${date}/${imageName}`;
+                    img.srcset = `images/${date}/${imageName} 1x, images/${date}/${imageName} 2x`;
                     img.alt = `Hình ảnh cây ngày ${formatDate(date)}`;
                     img.className = 'w-full h-full object-cover opacity-0';
                     
