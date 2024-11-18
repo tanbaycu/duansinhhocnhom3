@@ -35,8 +35,6 @@
         </div>
     </main>
 
-    
-
     <script>
         const dates = ['3009', '110', '310', '710', '1010', '1510', '1710', '1910', '2310', '2410', '2810', '511', '1211', '1711'];
         const timeline = document.getElementById('timeline');
@@ -69,19 +67,19 @@
                 gallery.innerHTML = '';
 
                 if (images.length === 0) {
-                    gallery.innerHTML = '<p class="col-span-full text-center text-gray-500">Không có ảnh cho ngày này.</p>';
+                    gallery.innerHTML = '<p class="col-span-full text-center text-gray-500">Không có ảnh cho ngày này hoặc đang gặp sự cố khi tải ảnh.</p>';
                     return;
                 }
 
-                images.forEach((imageName, index) => {
+                images.forEach((imageName) => {
                     const item = document.createElement('div');
                     item.className = 'relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105';
                     
                     const img = document.createElement('img');
                     img.src = `images/${date}/${imageName}`;
-                    img.srcset = `images/${date}/${imageName} 1x, images/${date}/${imageName} 2x`;
                     img.alt = `Hình ảnh cây ngày ${formatDate(date)}`;
                     img.className = 'w-full h-full object-cover opacity-0';
+                    img.loading = 'lazy';
                     
                     img.onload = () => {
                         img.classList.remove('opacity-0');
@@ -105,7 +103,7 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(text, 'text/html');
                 return Array.from(doc.querySelectorAll('a'))
-                    .filter(a => a.href.toLowerCase().endsWith('.jpg'))
+                    .filter(a => /\.(jpg|jpeg|png|gif)$/i.test(a.href))
                     .map(a => a.href.split('/').pop());
             } catch (error) {
                 console.error('Error reading directory:', error);
