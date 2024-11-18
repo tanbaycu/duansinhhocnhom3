@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình Trồng Cây - Theo Dõi Sự Phát Triển Qua Thời Gian</title>
+    <meta name="description" content="Khám phá hành trình trồng cây của chúng tôi thông qua bộ sưu tập ảnh theo thời gian. Theo dõi sự phát triển và tăng trưởng của cây từng ngày.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+    <header class="bg-green-600 text-white py-4 px-4 sm:px-6 lg:px-8 sticky top-0 z-10 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl sm:text-3xl font-bold">Hành Trình Trồng Cây Ớt của nhóm 3</h1>
+            <button id="scrollToTop" class="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300 hidden">
+                ↑
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div id="timeline" class="flex overflow-x-auto pb-4 mb-6 scrollbar-hide snap-x snap-mandatory">
+            <!-- Timeline items will be added here -->
+        </div>
+        <div id="gallery" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Gallery items will be added here -->
+        </div>
+    </main>
+
+
+    <script>
+        const dates = ['3009', '110', '310', '710', '1010', '1510', '1710', '1910', '2310', '2410', '2810', '511', '1211', '1711'];
+        const timeline = document.getElementById('timeline');
+        const gallery = document.getElementById('gallery');
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        function formatDate(dateString) {
+            const day = dateString.slice(0, -2);
+            const month = dateString.slice(-2);
+            return `${day}/${month}`;
+        }
+
+        function createTimelineItem(date) {
+            const button = document.createElement('button');
+            button.textContent = formatDate(date);
+            button.className = 'flex-shrink-0 px-4 py-2 m-1 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 bg-white text-green-600 hover:bg-green-50 transition duration-300 ease-in-out transform hover:scale-105 snap-start';
+            button.addEventListener('click', () => showImages(date));
+            return button;
+        }
+
+        async function showImages(date) {
+            timeline.querySelectorAll('button').forEach(btn => btn.classList.remove('bg-green-600', 'text-white'));
+            event.target.classList.add('bg-green-600', 'text-white');
+
+            gallery.innerHTML = '<div class="col-span-full text-center"><div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500"></div></div>';
+
+            try {
+                const images = await getImagesForDate(date);
+
+                gallery.innerHTML = '';
+
+                if (images.length === 0) {
+                    gallery.innerHTML = '<p class="col-span-full text-center text-gray-500">Không có ảnh cho ngày này.</p>';
+                    return;
+                }
+
+                images.forEach((imageName, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105';
+                    
+                    const img = document.createElement('img');
+                    img.src = `images/${date}/${imageName}`;
+                    img.alt = `Hình ảnh cây ngày ${formatDate(date)}`;
+                    img.className = 'w-full h-full object-cover opacity-0';
+                    
+                    img.onload = () => {
+                        img.classList.remove('opacity-0');
+                        img.classList.add('fade-in');
+                    };
+                    
+                    item.appendChild(img);
+                    gallery.appendChild(item);
+                });
+            } catch (error) {
+                console.error('Error fetching images:', error);
+                gallery.innerHTML = '<p class="col-span-full text-center text-red-500">Đã xảy ra lỗi khi tải ảnh. Vui lòng thử lại sau.</p>';
+            }
+        }
+
+        async function getImagesForDate(date) {
+            try {
+                const response = await fetch(`images/${date}/`);
+                if (!response.ok) throw new Error('Failed to fetch directory listing');
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                return Array.from(doc.querySelectorAll('a'))
+                    .filter(a => a.href.toLowerCase().endsWith('.jpg'))
+                    .map(a => a.href.split('/').pop());
+            } catch (error) {
+                console.error('Error reading directory:', error);
+                return [];
+            }
+        }
+
+        dates.forEach(date => {
+            const item = createTimelineItem(date);
+            timeline.appendChild(item);
+        });
+
+        showImages(dates[0]);
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) {
+                scrollToTopBtn.classList.remove('hidden');
+            } else {
+                scrollToTopBtn.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
