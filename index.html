@@ -19,7 +19,7 @@
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
     <header class="bg-green-600 text-white py-4 px-4 sm:px-6 lg:px-8 sticky top-0 z-10 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl sm:text-3xl font-bold">Hành Trình Trồng Cây Ớt của nhóm 3</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold">Hành Trình Trồng Cây của nhóm 3</h1>
             <button id="scrollToTop" class="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-300 hidden">
                 ↑
             </button>
@@ -35,9 +35,10 @@
         </div>
     </main>
 
+    
 
     <script>
-        const dates = ['3009', '110', '310', '710', '1010', '1510', '1710', '1910', '2310', '2410', '2810', '511', '1211', '1711'];
+        const dates = ['309', '310', '710', '110', '1010', '1510', '1710', '1910', '2310', '2410', '2810', '1711', '511', '1211'];
         const timeline = document.getElementById('timeline');
         const gallery = document.getElementById('gallery');
         const scrollToTopBtn = document.getElementById('scrollToTop');
@@ -77,7 +78,8 @@
                     item.className = 'relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out hover:scale-105';
                     
                     const img = document.createElement('img');
-                    img.src = `images/${date}/${imageName}`;
+                    img.src = `/_vercel/image?url=/images/${date}/${imageName}&w=400&q=75`;
+                    img.srcset = `/_vercel/image?url=/images/${date}/${imageName}&w=200&q=75 1x, /_vercel/image?url=/images/${date}/${imageName}&w=400&q=75 2x`;
                     img.alt = `Hình ảnh cây ngày ${formatDate(date)}`;
                     img.className = 'w-full h-full object-cover opacity-0';
                     
